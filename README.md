@@ -2,49 +2,77 @@
 
 Publish a docker image via **DotCI** when using the **docker-compose** build type:
 
-  * [Usage](#usage)
-    * [The 'latest' label](#the-latest-label)
-  * [Configuration](#configuration)
-  * [Logging](#logging)
-  * [Known Issues](#known-issues)
-  * [TODO](#todo)
+* [Usage](#usage)
+* [Configuration](#configuration)
+  * [Docker Registry Host](#docker-registry-host)
+  * [Force Push Latest](#force-push-latest)
+* [Logging](#logging)
+* [Known Issues](#known-issues)
+* [TODO](#todo)
 
 ## Usage
 
-Consider the below `.ci.yml`:
-
-    docker-compose-file: "./docker-compose.yml"
-
-    run:
-      mycoolapp: some-cmd-here
-
-    <% if( DOTCI_TAG || DOTCI_BRANCH =~ /publish.*/ ) { %>
-    plugins:
-      - publish: mycoolapp
-    <% } %>
-
-And this `./docker-compose.yml`:
+Consider the below `./docker-compose.yml`:
 
     mycoolapp:
       build: .
       environment:
         RAILS_ENV: production
 
-In the above example, we're publishing our image labeled with a semantic verstion that is derived from a git tag (e.g. `1.34.42`) - or the label will be the commit SHA when the branch name is `publish.*` (e.g. `publish.2015.12.23_16.02.00`)
+With this plugin, publishing one or more Docker images to one or more Docker registries can happen automatically after a successful build (or other condition.)
 
-In any case, an additional label will be published - `latest`. **This will happen any time you trigger this plugin**.
+Here's a sample `.ci.yml` where we publish our image to multiple registries:
 
-Please note that the above is a best practice example, and although you can very well (attempt to) publish on every build, please don't do that :-)
+	run:
+	  app: some-command-here
+	
+	<% if( DOTCI_TAG || DOTCI_BRANCH =~ /publish.*/ ) { %>
+	plugins:
+	  - publish:
+	    mycoolapp:
+	      - "registry-one.domain.tld"
+	      - "registry-two.domain.tld"
+	<% } %>
 
-### The 'latest' label
+You can also publish multiple images in a single job. If your `docker-compose.yml` looks like this:
 
-This plugin operates by force pushing the **latest** label each time it's ran, which will overwrite it.
+	mycoolapp:
+	  build: .
+	  environment:
+	    RAILS_ENV: production
+
+	otherimg:
+	  build: .
+
+Then configure your `.ci.yml` like this:
+
+	run:
+	  app: some-command-here
+	
+	<% if( DOTCI_TAG || DOTCI_BRANCH =~ /publish.*/ ) { %>
+	plugins:
+	  - publish:
+	    mycoolapp:
+	      - "registry-one.domain.tld"
+	      - "registry-two.domain.tld"
+	    otherimg:
+	      - "registry-three.domain.tld"
+	      - "registry-four.domain.tld"
+	<% } %>
+
+And you will have published both images to your configured registries. Great Job!
 
 ## Configuration
 
 You may configure the Docker Registry hostname via `/configure` in Jenkins - look for the section labeled **Docker Publish Configuration**.
 
-**TODO: talk about other config options here.**
+### Docker Registry Host
+
+This defaults to the public Docker registry (`hub.docker.com`) and can be overwritten in your `.ci.yml`.
+
+### Force Push Latest
+
+This defaults to ***on***, and will force push the `latest` label upon publish.
 
 ## Logging
 
@@ -65,6 +93,4 @@ These occur each time the plugin is invoked.
 
 ## TODO
 
-  * Toggle-able force pushing of '`latest`' (?)
-    * Make it an option that can be set in `.ci.yml`
-  * Provide a way to publish multiple images to multiple registries
+  * Toggle force pushing of `latest` via `.ci.yml`

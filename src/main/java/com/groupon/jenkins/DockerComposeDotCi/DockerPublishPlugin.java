@@ -35,6 +35,7 @@ import hudson.model.Result;
 import hudson.tasks.Shell;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.Map;
 
@@ -42,6 +43,8 @@ import java.util.Map;
 public class DockerPublishPlugin extends DotCiPluginAdapter {
     private static final Logger LOGGER = Logger.getLogger(DockerPublishPlugin.class.getName());
     DockerPublishConfiguration configuration = DockerPublishConfiguration.get();
+    DockerPublishUtils utils = new DockerPublishUtils();
+    String badYamlWarning = "The plugin was invoked but no images or registries were specified! Please review your `.ci.yml` syntax.";
 
     public DockerPublishPlugin() {
         super("publish", "");
@@ -54,7 +57,6 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
             try {
                 ShellCommands publishCommands = getPublishCommands(build, listener);
                 Shell execution = new Shell("#!/bin/bash -l \n set -e \n" + publishCommands.toShellScript());
-                LOGGER.info(String.format("Execution string will be: %s: ", execution));
                 boolean result;
 
                 try {
@@ -64,7 +66,6 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
                     throw new RuntimeException(e);
                 }
                 return result;
-
             } catch (IOException e) {
                 LOGGER.severe(String.format("Got exception: %s", e));
                 return false;
@@ -76,48 +77,59 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
         return true;
     }
 
-    public ShellCommands getPublishCommands(DynamicBuild build, BuildListener listener) throws IOException, InterruptedException {
+    private ShellCommands getPublishCommands(DynamicBuild build, BuildListener listener) throws IOException, InterruptedException {
+
         Map<String, Object> buildEnvironment = build.getEnvironmentWithChangeSet(listener);
         String dotCiBranch = buildEnvironment.get("DOTCI_BRANCH").toString();
         String dotCiTag = null;
         if (dotCiBranch.contains("tags/"))
             dotCiTag = buildEnvironment.get("DOTCI_TAG").toString();
-        String repoName = build.getParent().getFullName();
-        String sha = build.getSha();
+        String orgSlashRepo = build.getParent().getFullName();
+        String buildSha = build.getSha();
         int buildNumber = build.getNumber();
         boolean forcePushLatest = configuration.isForcePushLatest();
         String registryHost = configuration.getRegistryHost();
-        String dockerRegistryImageName = registryHost + repoName.toLowerCase().replaceAll("-", "_");
-        String publishProjectName = repoName.replaceAll("/", "").replaceAll("\\.", "").replaceAll("-", "").replaceAll("_", "").toLowerCase() + buildNumber;
+        String composeBuildName = orgSlashRepo.replaceAll("/", "").replaceAll("\\.", "").replaceAll("-", "")
+                .replaceAll("_", "").toLowerCase() + buildNumber;
         ShellCommands publishCommands = new ShellCommands();
 
-        // Build the image
-        LOGGER.info(String.format("Building '%s'", publishProjectName));
-        publishCommands.add(String.format("docker-compose -p %s pull", publishProjectName));
-        publishCommands.add(String.format("docker-compose -p %s build", publishProjectName));
+        // Build everything
+        publishCommands.add(String.format("docker-compose -p %s pull", composeBuildName));
+        publishCommands.add(String.format("docker-compose -p %s build", composeBuildName));
 
-        if (dotCiTag != null) {
-            // Publish with label as tag
-            LOGGER.info(String.format("Publishing tagged image: %s:%s", dockerRegistryImageName, dotCiTag));
-            publishCommands.add(String.format("docker tag %s_%s %s:%s", publishProjectName, getComposeImageToPublish(), dockerRegistryImageName, dotCiTag));
-            publishCommands.add(String.format("docker push %s:%s", dockerRegistryImageName, dotCiTag));
+        if (this.options instanceof Map) {
+            for (Map.Entry<String, ArrayList<?>> imageMap : ((Map<String, ArrayList<?>>) this.options).entrySet()) {
+                String composeImage = imageMap.getKey();
+                ArrayList registryList = imageMap.getValue();
+
+                if (registryList != null) {
+                    // Publish image(s) to the configured registryHost(s)
+                    LOGGER.info(String.format("Found %d registryHost(s) in .ci.yml ...", registryList.size()));
+                    for (Object registryURL : registryList) {
+                        registryHost = registryURL.toString();
+                        // Ensure we have a trailing slash
+                        if (!registryHost.endsWith("/"))
+                            registryHost = registryHost + "/";
+                        String dockerRepoName = registryHost + orgSlashRepo.toLowerCase().replaceAll("-", "_");
+                        // Do the publish!
+                        utils.publishImages(publishCommands, composeBuildName, composeImage, dotCiTag,
+                                buildSha, dockerRepoName, forcePushLatest, LOGGER);
+                    }
+                } else {
+                    // Publish image(s) to the default registryHost
+                    LOGGER.info("No registryHost found in .ci.yml, we will use the default ...");
+                    String dockerRepoName = registryHost + orgSlashRepo.toLowerCase().replaceAll("-", "_");
+
+                    // Do the publish!
+                    utils.publishImages(publishCommands, composeBuildName, composeImage, dotCiTag,
+                            buildSha, dockerRepoName, forcePushLatest, LOGGER);
+                }
+            }
         } else {
-            // Publish with label as sha
-            LOGGER.info(String.format("Publishing image with SHA: %s:%s", dockerRegistryImageName, sha));
-            publishCommands.add(String.format("docker tag %s_%s %s:%s", publishProjectName, getComposeImageToPublish(), dockerRegistryImageName, sha));
-            publishCommands.add(String.format("docker push %s:%s",dockerRegistryImageName, sha));
+            // The plugin was invoked with an invalid syntax!
+            LOGGER.severe(badYamlWarning);
+            throw new InvalidYamlException("ERROR: " + badYamlWarning);
         }
-
-        if (forcePushLatest)
-        // Publish as 'latest'
-            LOGGER.info(String.format("Publishing image with 'latest' label: %s", dockerRegistryImageName));
-            publishCommands.add(String.format("docker tag -f %s_%s %s:latest", publishProjectName, getComposeImageToPublish(), dockerRegistryImageName));
-            publishCommands.add(String.format("docker push %s:latest", dockerRegistryImageName));
-
         return publishCommands;
-    }
-
-    private Object getComposeImageToPublish() {
-        return this.options;
     }
 }
