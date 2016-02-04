@@ -29,9 +29,9 @@ Here's a sample `.ci.yml` where we publish our image to multiple registries:
 	<% if( DOTCI_TAG || DOTCI_BRANCH =~ /publish.*/ ) { %>
 	plugins:
 	  - publish:
-	    mycoolapp:
-	      - "registry-one.domain.tld"
-	      - "registry-two.domain.tld"
+	      mycoolapp:
+	        - "registry-one.domain.tld"
+	        - "registry-two.domain.tld"
 	<% } %>
 
 You can also publish multiple images in a single job. If your `docker-compose.yml` looks like this:
@@ -52,12 +52,12 @@ Then configure your `.ci.yml` like this:
 	<% if( DOTCI_TAG || DOTCI_BRANCH =~ /publish.*/ ) { %>
 	plugins:
 	  - publish:
-	    mycoolapp:
-	      - "registry-one.domain.tld"
-	      - "registry-two.domain.tld"
-	    otherimg:
-	      - "registry-three.domain.tld"
-	      - "registry-four.domain.tld"
+	      mycoolapp:
+	        - "registry-one.domain.tld"
+	        - "registry-two.domain.tld"
+	      otherimg:
+	        - "registry-three.domain.tld"
+	        - "registry-four.domain.tld"
 	<% } %>
 
 And you will have published both images to your configured registries. Great Job!
