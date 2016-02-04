@@ -37,7 +37,11 @@ public class DockerPublishUtils {
                                                      String hostOrgRepo, String label, String msg, Logger LOGGER) {
         LOGGER.info(msg);
         cmds.add(String.format("docker tag %s_%s %s:%s", composeBuild, composeImage, hostOrgRepo, label));
-        cmds.add(String.format("docker push %s:%s", hostOrgRepo, label));
+        if (label.equals("latest")) {
+            cmds.add(String.format("docker push -f %s:%s", hostOrgRepo, label));
+        } else {
+            cmds.add(String.format("docker push %s:%s", hostOrgRepo, label));
+        }
         return cmds;
     }
 
