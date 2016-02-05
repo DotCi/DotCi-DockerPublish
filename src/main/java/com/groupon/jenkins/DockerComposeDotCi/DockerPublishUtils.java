@@ -36,12 +36,12 @@ public class DockerPublishUtils {
     private ShellCommands buildTagAndPublishCommands(ShellCommands cmds, String composeBuild, String composeImage,
                                                      String hostOrgRepo, String label, String msg, Logger LOGGER) {
         LOGGER.info(msg);
-        cmds.add(String.format("docker tag %s_%s %s:%s", composeBuild, composeImage, hostOrgRepo, label));
         if (label.equals("latest")) {
-            cmds.add(String.format("docker push -f %s:%s", hostOrgRepo, label));
+            cmds.add(String.format("docker tag -f %s_%s %s:%s", composeBuild, composeImage, hostOrgRepo, label));
         } else {
-            cmds.add(String.format("docker push %s:%s", hostOrgRepo, label));
+            cmds.add(String.format("docker tag %s_%s %s:%s", composeBuild, composeImage, hostOrgRepo, label));
         }
+        cmds.add(String.format("docker push %s:%s", hostOrgRepo, label));
         return cmds;
     }
 
