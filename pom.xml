@@ -11,7 +11,7 @@
   </parent>
   <groupId>com.groupon.jenkins-ci.plugins</groupId>
   <artifactId>DotCi-DockerPublish</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Docker Publish for DotCi</name>
   <description>Publish docker images to a docker registry from a DotCi job</description>
@@ -33,7 +33,7 @@
     <connection>scm:git:ssh://github.com/DotCi/DotCi-DockerPublish.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/DotCi/DotCi-DockerPublish.git</developerConnection>
     <url>https://github.com/DotCi/DotCi-DockerPublish</url>
-    <tag>DotCi-DockerPublish-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
   <repositories>
     <repository>
