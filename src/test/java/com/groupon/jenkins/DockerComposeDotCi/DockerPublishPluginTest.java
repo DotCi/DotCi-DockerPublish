@@ -47,9 +47,9 @@ public class DockerPublishPluginTest {
     String expected_tag_cmd_with_tag = String.format("docker tag %s_%s %s:%s",
             composeBuildName, composeImage, dockerRepoName, dotCiTag);
     String expected_push_cmd_with_tag = String.format("docker push %s:%s", dockerRepoName, dotCiTag);
-    String expected_tag_cmd_with_latest = String.format("docker tag %s_%s %s:%s",
+    String expected_tag_cmd_with_latest = String.format("docker tag -f %s_%s %s:%s",
             composeBuildName, composeImage, dockerRepoName, "latest");
-    String expected_push_cmd_with_latest = String.format("docker push -f %s:%s", dockerRepoName, "latest");
+    String expected_push_cmd_with_latest = String.format("docker push %s:%s", dockerRepoName, "latest");
     String expected_first_command_sha = expected_tag_cmd_with_sha;
     String expected_first_command_tag = expected_tag_cmd_with_tag;
     String expected_second_command_sha = expected_push_cmd_with_sha;
