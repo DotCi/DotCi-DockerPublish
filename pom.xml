@@ -29,11 +29,11 @@ THE SOFTWARE.
         <artifactId>plugin</artifactId>
         <!-- Baseline Jenkins version you use to build and test the plugin. Users must have this version or newer to run. -->
         <version>1.618</version>
-        <relativePath/>
+        <relativePath />
     </parent>
     <groupId>com.groupon.jenkins-ci.plugins</groupId>
     <artifactId>DotCi-DockerPublish</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>Docker Publish for DotCi</name>
     <packaging>hpi</packaging>
     <licenses>
@@ -55,7 +55,7 @@ THE SOFTWARE.
         <connection>scm:git:ssh://github.com/DotCi/DotCi-DockerPublish.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/DotCi/DotCi-DockerPublish.git</developerConnection>
         <url>https://github.com/DotCi/DotCi-DockerPublish</url>
-        <tag>HEAD</tag>
+        <tag>DotCi-DockerPublish-1.0.1</tag>
     </scm>
     <repositories>
         <repository>
