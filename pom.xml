@@ -1,58 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2014, Groupon, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <groupId>org.jenkins-ci.plugins</groupId>
-    <artifactId>plugin</artifactId>
-    <!-- Baseline Jenkins version you use to build and test the plugin. Users must have this version or newer to run. -->
-    <version>1.618</version>
-    <relativePath />
-  </parent>
-  <groupId>com.groupon.jenkins-ci.plugins</groupId>
-  <artifactId>DotCi-DockerPublish</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
-  <packaging>hpi</packaging>
-  <name>Docker Publish for DotCi</name>
-  <description>Publish docker images to a docker registry from a DotCi job</description>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/DotCi+DockerPublish+Plugin</url>
-  <licenses>
-    <license>
-      <name>MIT License</name>
-      <url>http://opensource.org/licenses/MIT</url>
-    </license>
-  </licenses>
-  <developers>
-    <developer>
-      <id>hristoast</id>
-      <name>Hristos N. Triantafillou</name>
-      <email>me@hristos.triantafillou.us</email>
-    </developer>
-  </developers>
-  <scm>
-    <connection>scm:git:ssh://github.com/DotCi/DotCi-DockerPublish.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/DotCi/DotCi-DockerPublish.git</developerConnection>
-    <url>https://github.com/DotCi/DotCi-DockerPublish</url>
-    <tag>HEAD</tag>
-  </scm>
-  <repositories>
-    <repository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  <dependencies>
-    <dependency>
-      <groupId>com.groupon.jenkins-ci.plugins</groupId>
-      <artifactId>DotCi</artifactId>
-      <version>2.7.1</version>
-    </dependency>
-  </dependencies>
-
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <!-- Baseline Jenkins version you use to build and test the plugin. Users must have this version or newer to run. -->
+        <version>1.618</version>
+        <relativePath/>
+    </parent>
+    <groupId>com.groupon.jenkins-ci.plugins</groupId>
+    <artifactId>DotCi-DockerPublish</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+    <name>Docker Publish for DotCi</name>
+    <packaging>hpi</packaging>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>hristoast</id>
+            <name>Hristos N. Triantafillou</name>
+            <email>me@hristos.triantafillou.us</email>
+        </developer>
+    </developers>
+    <description>Publish docker images to a docker registry from a DotCi job</description>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/DotCi+DockerPublish+Plugin</url>
+    <scm>
+        <connection>scm:git:ssh://github.com/DotCi/DotCi-DockerPublish.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/DotCi/DotCi-DockerPublish.git</developerConnection>
+        <url>https://github.com/DotCi/DotCi-DockerPublish</url>
+        <tag>HEAD</tag>
+    </scm>
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.groupon.jenkins-ci.plugins</groupId>
+            <artifactId>DotCi</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+    </dependencies>
 </project>
