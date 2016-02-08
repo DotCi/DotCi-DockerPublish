@@ -34,7 +34,7 @@ THE SOFTWARE.
     <groupId>com.groupon.jenkins-ci.plugins</groupId>
     <artifactId>DotCi-DockerPublish</artifactId>
     <version>1.0.2-SNAPSHOT</version>
-    <name>Docker Publish for DotCi</name>
+    <name>DotCi DockerPublish</name>
     <packaging>hpi</packaging>
     <licenses>
         <license>
