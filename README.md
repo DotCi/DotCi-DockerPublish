@@ -4,6 +4,7 @@ Publish a docker image via **DotCI** when using the **docker-compose** build typ
 
 * [Usage](#usage)
 * [Configuration](#configuration)
+  * [Build Tags](#build-tags)
   * [Docker Registry Host](#docker-registry-host)
   * [Force Push Latest](#force-push-latest)
 * [Logging](#logging)
@@ -64,9 +65,13 @@ And you will have published both images to your configured registries. Great Job
 
 ## Configuration
 
-You may configure the Docker Registry hostname via `/configure` in Jenkins - look for the section labeled **Docker Publish Configuration**.
+### Build Tags
+
+In order to push images named after git tags, you must first enable **Build Tags** under your job's configuration. This will trigger a build when you push a git tag, as well as a docker image push that is labeled with the git tag.
 
 ### Docker Registry Host
+
+You may configure the Docker Registry hostname via `/configure` in Jenkins - look for the section labeled **Docker Publish Configuration**.
 
 This defaults to the public Docker registry (`hub.docker.com`) and can be overwritten in your `.ci.yml`.
 
