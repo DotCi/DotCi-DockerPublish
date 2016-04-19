@@ -93,10 +93,7 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
                 .replaceAll("_", "").toLowerCase() + buildNumber;
         ShellCommands publishCommands = new ShellCommands();
 
-        // Build everything
-        publishCommands.add(String.format("docker-compose -p %s pull", composeBuildName));
-        publishCommands.add(String.format("docker-compose -p %s build", composeBuildName));
-
+        // Read options from .ci.yml and do things with them
         if (this.options instanceof Map) {
             for (Map.Entry<String, ArrayList<?>> imageMap : ((Map<String, ArrayList<?>>) this.options).entrySet()) {
                 String composeImage = imageMap.getKey();
