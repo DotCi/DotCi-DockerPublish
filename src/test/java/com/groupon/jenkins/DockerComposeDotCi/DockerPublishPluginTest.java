@@ -47,20 +47,15 @@ public class DockerPublishPluginTest {
     String expected_tag_cmd_with_tag = String.format("docker tag %s_%s %s:%s",
             composeBuildName, composeImage, dockerRepoName, dotCiTag);
     String expected_push_cmd_with_tag = String.format("docker push %s:%s", dockerRepoName, dotCiTag);
-    String expected_tag_cmd_with_latest = String.format("docker tag -f %s_%s %s:%s",
-            composeBuildName, composeImage, dockerRepoName, "latest");
-    String expected_push_cmd_with_latest = String.format("docker push %s:%s", dockerRepoName, "latest");
     String expected_first_command_sha = expected_tag_cmd_with_sha;
     String expected_first_command_tag = expected_tag_cmd_with_tag;
     String expected_second_command_sha = expected_push_cmd_with_sha;
     String expected_second_command_tag = expected_push_cmd_with_tag;
-    String expected_third_command = expected_tag_cmd_with_latest;
-    String expected_fourth_command = expected_push_cmd_with_latest;
 
     @Test
     public void should_publish_sha_as_label_if_tag_is_null() {
         ShellCommands final_cmds = utils.publishImages(cmds, composeBuildName,
-                composeImage, null, sha, dockerRepoName, false, LOGGER);
+                composeImage, null, sha, dockerRepoName, LOGGER);
 
         String cmd_lines[] = final_cmds.toShellScript().split("\\r?\\n");
 
@@ -74,7 +69,7 @@ public class DockerPublishPluginTest {
     @Test
     public void should_publish_tag_as_label_if_there_is_one() {
         ShellCommands final_cmds = utils.publishImages(cmds, composeBuildName,
-                composeImage, dotCiTag, sha, dockerRepoName, false, LOGGER);
+                composeImage, dotCiTag, sha, dockerRepoName, LOGGER);
 
         String cmd_lines[] = final_cmds.toShellScript().split("\\r?\\n");
 
@@ -86,51 +81,23 @@ public class DockerPublishPluginTest {
     }
 
     @Test
-    public void should_force_push_latest_if_enabled() {
+    public void should_run_the_correct_commands_for_sha() {
         ShellCommands final_cmds = utils.publishImages(cmds, composeBuildName,
-                composeImage, dotCiTag, sha, dockerRepoName, true, LOGGER);
-
-        String cmd_lines[] = final_cmds.toShellScript().split("\\r?\\n");
-
-        String tag_cmd = cmd_lines[5];
-        String push_cmd = cmd_lines[7];
-
-        Assert.assertEquals(tag_cmd, expected_tag_cmd_with_latest);
-        Assert.assertEquals(push_cmd, expected_push_cmd_with_latest);
-    }
-
-    @Test
-    public void should_not_force_push_latest_if_disabled() {
-        ShellCommands final_cmds = utils.publishImages(cmds, composeBuildName,
-                composeImage, dotCiTag, sha, dockerRepoName, false, LOGGER);
-
-        String cmd_lines[] = final_cmds.toShellScript().split("\\r?\\n");
-
-        Assert.assertEquals(cmd_lines.length, 4);  // When pushing 'latest' we have 8 commands
-    }
-
-    @Test
-    public void should_run_the_correct_commands_for_sha_and_latest_publish() {
-        ShellCommands final_cmds = utils.publishImages(cmds, composeBuildName,
-                composeImage, null, sha, dockerRepoName, true, LOGGER);
+                composeImage, null, sha, dockerRepoName, LOGGER);
 
         String cmd_lines[] = final_cmds.toShellScript().split("\\r?\\n");
 
         String first_cmd = cmd_lines[1];
         String second_cmd = cmd_lines[3];
-        String third_cmd = cmd_lines[5];
-        String fourth_cmd = cmd_lines[7];
 
         Assert.assertEquals(first_cmd, expected_first_command_sha);
         Assert.assertEquals(second_cmd, expected_second_command_sha);
-        Assert.assertEquals(third_cmd, expected_third_command);
-        Assert.assertEquals(fourth_cmd, expected_fourth_command);
     }
 
     @Test
-    public void should_run_the_correct_commands_for_tag_and_no_latest_publish() {
+    public void should_run_the_correct_commands_for_tag() {
         ShellCommands final_cmds = utils.publishImages(cmds, composeBuildName,
-                composeImage, dotCiTag, dotCiTag, dockerRepoName, false, LOGGER);
+                composeImage, dotCiTag, dotCiTag, dockerRepoName, LOGGER);
 
         String cmd_lines[] = final_cmds.toShellScript().split("\\r?\\n");
 
