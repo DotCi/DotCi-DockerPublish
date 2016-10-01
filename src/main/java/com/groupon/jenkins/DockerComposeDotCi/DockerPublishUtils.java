@@ -36,17 +36,13 @@ public class DockerPublishUtils {
     private ShellCommands buildTagAndPublishCommands(ShellCommands cmds, String composeBuild, String composeImage,
                                                      String hostOrgRepo, String label, String msg, Logger LOGGER) {
         LOGGER.info(msg);
-        if (label.equals("latest")) {
-            cmds.add(String.format("docker tag -f %s_%s %s:%s", composeBuild, composeImage, hostOrgRepo, label));
-        } else {
-            cmds.add(String.format("docker tag %s_%s %s:%s", composeBuild, composeImage, hostOrgRepo, label));
-        }
+        cmds.add(String.format("docker tag %s_%s %s:%s", composeBuild, composeImage, hostOrgRepo, label));
         cmds.add(String.format("docker push %s:%s", hostOrgRepo, label));
         return cmds;
     }
 
     public ShellCommands publishImages(ShellCommands cmds, String composeBuild, String composeImage, String ciTag,
-                                        String sha, String hostOrgRepo, boolean forcePushLatest, Logger LOGGER) {
+                                        String sha, String hostOrgRepo, Logger LOGGER) {
 
         if (ciTag != null) {
             // Publish with label as tag
@@ -56,14 +52,6 @@ public class DockerPublishUtils {
             // Publish with label as sha
             buildTagAndPublishCommands(cmds, composeBuild, composeImage, hostOrgRepo, sha,
                     String.format("Publishing image '%s' with SHA: %s:%s", composeImage, hostOrgRepo, sha), LOGGER);
-        }
-
-        if (forcePushLatest) {
-            // Publish as 'latest'
-            buildTagAndPublishCommands(cmds, composeBuild, composeImage, hostOrgRepo, "latest",
-                    String.format("Publishing image '%s' with 'latest' label: %s", composeImage, hostOrgRepo), LOGGER);
-        } else {
-            LOGGER.info("Force pushing 'latest' is disabled, skipping ...");
         }
         return cmds;
     }

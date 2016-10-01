@@ -6,10 +6,7 @@ Publish a docker image via **DotCI** when using the **docker-compose** build typ
 * [Configuration](#configuration)
   * [Build Tags](#build-tags)
   * [Docker Registry Host](#docker-registry-host)
-  * [Force Push Latest](#force-push-latest)
 * [Logging](#logging)
-* [Known Issues](#known-issues)
-* [TODO](#todo)
 
 ## Usage
 
@@ -75,10 +72,6 @@ You may configure the Docker Registry hostname via `/configure` in Jenkins - loo
 
 This defaults to the public Docker registry (`hub.docker.com`) and can be overwritten in your `.ci.yml`.
 
-### Force Push Latest
-
-This defaults to ***on***, and will force push the `latest` label upon publish.
-
 ## Logging
 
 The plugin writes entries into the build master's catalina logs:
@@ -91,11 +84,3 @@ The plugin writes entries into the build master's catalina logs:
     INFO: Publishing image with 'latest' label: your.registry.tld/repo/foo_bar_baz
 
 These occur each time the plugin is invoked.
-
-## Known Issues
-
-  * None
-
-## TODO
-
-  * Toggle force pushing of `latest` via `.ci.yml`
