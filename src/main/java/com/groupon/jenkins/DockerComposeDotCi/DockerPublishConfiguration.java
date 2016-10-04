@@ -46,14 +46,6 @@ public class DockerPublishConfiguration extends GlobalConfiguration {
         return true;
     }
 
-    public boolean isForcePushLatest() {
-        return forcePushLatest;
-    }
-
-    public void setForcePushLatest(boolean forcePushLatest) {
-        this.forcePushLatest = forcePushLatest;
-    }
-
     public String getRegistryHost() {
         return registryHost;
     }
