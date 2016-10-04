@@ -32,8 +32,5 @@ f.section(title:_("Docker Publish Configuration")) {
         f.entry(title:_("Docker Registry Host"), field: "registryHost") {
             f.textbox()
         }
-        f.entry(title:_("Force Push Latest"), field: "forcePushLatest") {
-            f.checkbox(title:_("Force Push The 'latest' Label?"))
-        }
     }
 }

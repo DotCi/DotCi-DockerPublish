@@ -39,12 +39,12 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.Map;
 
+@SuppressWarnings("WeakerAccess")
 @Extension
 public class DockerPublishPlugin extends DotCiPluginAdapter {
     private static final Logger LOGGER = Logger.getLogger(DockerPublishPlugin.class.getName());
-    DockerPublishConfiguration configuration = DockerPublishConfiguration.get();
-    DockerPublishUtils utils = new DockerPublishUtils();
-    String badYamlWarning = "The plugin was invoked but no images or registries were specified! Please review your `.ci.yml` syntax.";
+    private DockerPublishConfiguration configuration = DockerPublishConfiguration.get();
+    private DockerPublishUtils utils = new DockerPublishUtils();
 
     public DockerPublishPlugin() {
         super("publish", "");
@@ -87,7 +87,6 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
         String orgSlashRepo = build.getParent().getFullName();
         String buildSha = build.getSha();
         int buildNumber = build.getNumber();
-        boolean forcePushLatest = configuration.isForcePushLatest();
         String registryHost = configuration.getRegistryHost();
         String composeBuildName = orgSlashRepo.replaceAll("/", "").replaceAll("\\.", "").replaceAll("-", "")
                 .replaceAll("_", "").toLowerCase() + buildNumber;
@@ -95,6 +94,7 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
 
         // Read options from .ci.yml and do things with them
         if (this.options instanceof Map) {
+            //noinspection unchecked
             for (Map.Entry<String, ArrayList<?>> imageMap : ((Map<String, ArrayList<?>>) this.options).entrySet()) {
                 String composeImage = imageMap.getKey();
                 ArrayList registryList = imageMap.getValue();
@@ -110,7 +110,7 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
                         String dockerRepoName = registryHost + orgSlashRepo.toLowerCase().replaceAll("-", "_");
                         // Do the publish!
                         utils.publishImages(publishCommands, composeBuildName, composeImage, dotCiTag,
-                                buildSha, dockerRepoName, forcePushLatest, LOGGER);
+                                buildSha, dockerRepoName, LOGGER);
                     }
                 } else {
                     // Publish image(s) to the default registryHost
@@ -119,11 +119,12 @@ public class DockerPublishPlugin extends DotCiPluginAdapter {
 
                     // Do the publish!
                     utils.publishImages(publishCommands, composeBuildName, composeImage, dotCiTag,
-                            buildSha, dockerRepoName, forcePushLatest, LOGGER);
+                            buildSha, dockerRepoName, LOGGER);
                 }
             }
         } else {
             // The plugin was invoked with an invalid syntax!
+            String badYamlWarning = "The plugin was invoked but no images or registries were specified! Please review your `.ci.yml` syntax.";
             LOGGER.severe(badYamlWarning);
             throw new InvalidYamlException("ERROR: " + badYamlWarning);
         }
