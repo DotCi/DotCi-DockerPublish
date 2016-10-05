@@ -33,7 +33,7 @@ THE SOFTWARE.
     </parent>
     <groupId>com.groupon.jenkins-ci.plugins</groupId>
     <artifactId>DotCi-DockerPublish</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <name>DotCi DockerPublish</name>
     <packaging>hpi</packaging>
     <licenses>
@@ -55,7 +55,7 @@ THE SOFTWARE.
         <connection>scm:git:ssh://github.com/DotCi/DotCi-DockerPublish.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/DotCi/DotCi-DockerPublish.git</developerConnection>
         <url>https://github.com/DotCi/DotCi-DockerPublish</url>
-        <tag>HEAD</tag>
+        <tag>DotCi-DockerPublish-1.0.5</tag>
     </scm>
     <repositories>
         <repository>
