@@ -80,7 +80,5 @@ The plugin writes entries into the build master's catalina logs:
     INFO: Building 'repofoobarbaz34'
     Dec 23, 2015 4:20:20 PM com.groupon.jenkins.DockerComposeDotCi.DockerPublishPlugin getPublishCommands
     INFO: Publishing image with SHA: your.registry.tld/repo/foo_bar_baz:42840717732e72f8f8fbf8caa5982f0d9b47e372
-    Dec 23, 2015 4:20:20 PM com.groupon.jenkins.DockerComposeDotCi.DockerPublishPlugin getPublishCommands
-    INFO: Publishing image with 'latest' label: your.registry.tld/repo/foo_bar_baz
 
 These occur each time the plugin is invoked.
